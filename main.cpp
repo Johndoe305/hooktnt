@@ -10,18 +10,32 @@
 
 #define OFFSET_GET_RADIUS_MOVABLE 0x28B2118
 #define OFFSET_GET_RADIUS_STATIC  0x2A9C8A0
+#define OFFSET_SELECT_TARGETS     0x28B0F78
+#define OFFSET_EXPLODE            0x28B14A4
 
-static int (*orig_Movable)(void* self) = nullptr;
-static int (*orig_Static)(void* self) = nullptr;
+static int  (*orig_GetRadius_Movable)(void* self) = nullptr;
+static int  (*orig_GetRadius_Static)(void* self) = nullptr;
+static void (*orig_SelectTargets)(void* self, int radius) = nullptr;
+static void (*orig_Explode)(void* self) = nullptr;
 
-static int hook_Movable(void* self) {
-    LOGI("Movable hook!");
+static int hook_GetRadius_Movable(void* self) {
+    LOGI("GetRadius Movable chamado!");
     return 1000;
 }
 
-static int hook_Static(void* self) {
-    LOGI("Static hook!");
+static int hook_GetRadius_Static(void* self) {
+    LOGI("GetRadius Static chamado!");
     return 1000;
+}
+
+static void hook_SelectTargets(void* self, int radius) {
+    LOGI("SelectTargets chamado! radius=%d", radius);
+    orig_SelectTargets(self, 1000);
+}
+
+static void hook_Explode(void* self) {
+    LOGI("Explode chamado!");
+    orig_Explode(self);
 }
 
 static uintptr_t get_lib_base(const char* name) {
@@ -53,8 +67,10 @@ static void on_load() {
 
     LOGI("base: %lx", base);
 
-    A64HookFunction((void*)(base + OFFSET_GET_RADIUS_MOVABLE), (void*)hook_Movable, (void**)&orig_Movable);
-    A64HookFunction((void*)(base + OFFSET_GET_RADIUS_STATIC),  (void*)hook_Static,  (void**)&orig_Static);
+    A64HookFunction((void*)(base + OFFSET_GET_RADIUS_MOVABLE), (void*)hook_GetRadius_Movable, (void**)&orig_GetRadius_Movable);
+    A64HookFunction((void*)(base + OFFSET_GET_RADIUS_STATIC),  (void*)hook_GetRadius_Static,  (void**)&orig_GetRadius_Static);
+    A64HookFunction((void*)(base + OFFSET_SELECT_TARGETS),     (void*)hook_SelectTargets,     (void**)&orig_SelectTargets);
+    A64HookFunction((void*)(base + OFFSET_EXPLODE),            (void*)hook_Explode,           (void**)&orig_Explode);
 
     LOGI("hooks instalados");
 }

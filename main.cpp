@@ -8,7 +8,7 @@
 #define LOG_TAG "TNT_HOOK"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 
-#define OFFSET_GET_RADIUS_MOVABLE 0x28B3A18
+#define OFFSET_GET_RADIUS_MOVABLE 0x28B2118
 #define OFFSET_GET_RADIUS_STATIC  0x2A9C8A0
 
 static int (*orig_Movable)(void* self) = nullptr;

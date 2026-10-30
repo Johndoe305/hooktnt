@@ -8,14 +8,14 @@
 #define LOG_TAG "TNT_HOOK"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 
-#define OFFSET_GET_RADIUS_AD     0x2A9B71C
-#define OFFSET_GET_RADIUS_STATIC 0x2A9C8A0
+#define OFFSET_GET_RADIUS_MOVABLE 0x28B3A18
+#define OFFSET_GET_RADIUS_STATIC  0x2A9C8A0
 
-static int (*orig_Ad)(void* self) = nullptr;
+static int (*orig_Movable)(void* self) = nullptr;
 static int (*orig_Static)(void* self) = nullptr;
 
-static int hook_Ad(void* self) {
-    LOGI("Ad hook!");
+static int hook_Movable(void* self) {
+    LOGI("Movable hook!");
     return 1000;
 }
 
@@ -53,8 +53,8 @@ static void on_load() {
 
     LOGI("base: %lx", base);
 
-    A64HookFunction((void*)(base + OFFSET_GET_RADIUS_AD),     (void*)hook_Ad,     (void**)&orig_Ad);
-    A64HookFunction((void*)(base + OFFSET_GET_RADIUS_STATIC), (void*)hook_Static, (void**)&orig_Static);
+    A64HookFunction((void*)(base + OFFSET_GET_RADIUS_MOVABLE), (void*)hook_Movable, (void**)&orig_Movable);
+    A64HookFunction((void*)(base + OFFSET_GET_RADIUS_STATIC),  (void*)hook_Static,  (void**)&orig_Static);
 
     LOGI("hooks instalados");
 }

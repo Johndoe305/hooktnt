@@ -3,4 +3,6 @@ project(hooktnt)
 
 add_library(hooktnt SHARED main.cpp And64InlineHook.cpp)
 
+target_compile_definitions(hooktnt PRIVATE __aarch64__)
+
 target_link_libraries(hooktnt log android dl)
